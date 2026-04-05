@@ -56,6 +56,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.3.0")
     // NEW: OpenStreetMap (osmdroid)
     implementation("org.osmdroid:osmdroid-android:6.1.20")
+    implementation(libs.androidx.compose.foundation)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

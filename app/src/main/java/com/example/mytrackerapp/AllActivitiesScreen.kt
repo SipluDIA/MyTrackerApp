@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.mytrackerapp.ui.theme.Green01
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -270,7 +270,7 @@ fun SummaryCard(
                     icon = Icons.Default.LocalFireDepartment,
                     value = String.format("%.0f", totalCalories),
                     label = "kcal",
-                    color = Green01
+                    color = Color(0xFF4CAF50)
                 )
             }
         }

@@ -2,9 +2,11 @@ package com.example.mytrackerapp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyRow
@@ -64,12 +67,22 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.mytrackerapp.ui.theme.Black
+import com.example.mytrackerapp.ui.theme.BtnGreen
+import com.example.mytrackerapp.ui.theme.GradientEnd
+import com.example.mytrackerapp.ui.theme.GradientStart
+import com.example.mytrackerapp.ui.theme.Grey1
+import com.example.mytrackerapp.ui.theme.Grey2
+import com.example.mytrackerapp.ui.theme.Pink1
+import com.example.mytrackerapp.ui.theme.PurpleLight
+import com.example.mytrackerapp.ui.theme.poppinsFamily
 import kotlin.text.toFloat
 
 // Dashboard Screen - Updated with Set Goal button
@@ -82,13 +95,29 @@ fun DashboardScreen(
     val username = sessionManager.getUsername()
     val context = androidx.compose.ui.platform.LocalContext.current
     val apiHelper = remember { APIHelper(context) }
-
+    var weight by remember { mutableStateOf("") }
+    var height by remember { mutableStateOf("") }
     var progressData by remember { mutableStateOf<ProgressData?>(null) }
     var isLoadingProgress by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf("") }
 
     // Load progress data
     LaunchedEffect(Unit) {
         val userId = sessionManager.getUserId()
+        apiHelper.getProfile(
+            userId = userId,
+            onSuccess = { profile ->
+                if (profile != null) {
+                    weight = profile.weight.toString()
+                    height = profile.height.toString()
+                }
+                isLoadingProgress = false
+            },
+            onError = { error ->
+                errorMessage = error
+                isLoadingProgress = false
+            }
+        )
         apiHelper.getProgress(
             userId = userId,
             onSuccess = { data ->
@@ -201,34 +230,181 @@ fun DashboardScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(24.dp),
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = Icons.Default.CheckCircle,
-                contentDescription = null,
-                modifier = Modifier.size(100.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column {
+                    Text(
+                        "Welcome Back,",
+                        color = Grey1,
+                        fontSize = 12.sp,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.Normal
+                    )
+                    Text(
+                        "$username!",
+                        color = Black,
+                        fontSize = 20.sp,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.Bold
+                    )
 
-            Text(
-                text = "Hi $username!",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
+                }
+                Box() {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_icon_notification),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .background(color = Grey2, shape = RoundedCornerShape(8.dp))
+                            .padding(10.dp)
+                            .clickable { println("Button Clicked!") })
+                }
+
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
+            // BMI Card (if weight and height are available)
+            if (weight.isNotEmpty() && height.isNotEmpty()) {
+                val weightValue = weight.toDoubleOrNull()
+                val heightValue = height.toDoubleOrNull()
 
-            Text(
-                text = "Welcome to your Fit Trac App",
-                fontSize = 18.sp,
-                color = Color.Gray
-            )
+                if (weightValue != null && heightValue != null && heightValue > 0) {
+                    val bmi = weightValue / ((heightValue / 100) * (heightValue / 100))
+                    val bmiCategory = when {
+                        bmi < 18.5 -> "Underweight"
+                        bmi < 25 -> "Normal"
+                        bmi < 30 -> "Overweight"
+                        else -> "Obese"
+                    }
 
-            Spacer(modifier = Modifier.height(48.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(160.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.bg_home_header),
+                            contentDescription = null,
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier.matchParentSize(),
+                            alignment = Alignment.Center
+
+                        )
+                        Column(
+                            modifier = Modifier
+                                .height(150.dp)
+                                .padding(start = 18.dp, top = 22.dp, bottom = 12.dp),
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                "BMI (Body Mass Index)",
+                                color = Color.White,
+                                fontSize = 14.sp,
+                                fontFamily = poppinsFamily,
+                                fontWeight = FontWeight.SemiBold
+                            )
+
+                            if (bmi != null) {
+                                Text(
+                                    text = String.format("%.1f", bmi),
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontFamily = poppinsFamily,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    "You are: $bmiCategory",
+                                    color = Color.White,
+                                    fontSize = 14.sp,
+                                    fontFamily = poppinsFamily,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            } else {
+                                Text(
+                                    "Your BMI: -",
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontFamily = poppinsFamily,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    "You are: -",
+                                    color = Color.White,
+                                    fontSize = 14.sp,
+                                    fontFamily = poppinsFamily,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                            Button(
+
+                                modifier = Modifier
+                                    .wrapContentSize()
+                                    .padding(start = 0.dp, end = 0.dp, bottom = 0.dp)
+                                    .background(
+                                        color = Color.White,
+                                        shape = RoundedCornerShape(15.dp)
+                                    )
+                                    .height(30.dp),
+                                onClick = { navController.navigate("profile")},
+                                contentPadding = PaddingValues(start = 12.dp, end = 12.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                            ) {
+                                Text(
+                                    "View Profile", color = Pink1, fontSize = 10.sp,
+                                    fontFamily = poppinsFamily, fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = PurpleLight, shape = RoundedCornerShape(12.dp))
+                    .padding(15.dp)
+            ) {
+
+                Text(
+                    "Your Goal", color = Black, fontSize = 14.sp,
+                    fontFamily = poppinsFamily, fontWeight = FontWeight.Medium
+                )
+                Button(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(start = 0.dp, end = 0.dp, bottom = 0.dp)
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                listOf(
+                                    GradientStart,
+                                    GradientEnd
+                                )
+                            ),
+                            shape = RoundedCornerShape(15.dp)
+                        )
+                        .height(30.dp),
+                    onClick = { navController.navigate("set_goal") },
+                    contentPadding = PaddingValues(start = 12.dp, end = 12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ) {
+                    Text(
+                        "Check", color = Color.White, fontSize = 12.sp,
+                        fontFamily = poppinsFamily, fontWeight = FontWeight.Normal
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Stats Cards Section
             Column(
@@ -348,34 +524,6 @@ fun DashboardScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Set Goal Button - Prominent and Eye-catching
-                Button(
-                    onClick = { navController.navigate("setgoal") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF4CAF50)
-                    ),
-                    elevation = ButtonDefaults.buttonElevation(
-                        defaultElevation = 4.dp,
-                        pressedElevation = 8.dp
-                    )
-                ) {
-                    Icon(
-                        Icons.Default.FitnessCenter,
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "Set Monthly Goals",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
 
                 // Track Activity Button - NEW
                 Button(
@@ -384,7 +532,7 @@ fun DashboardScreen(
                         .fillMaxWidth()
                         .height(64.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFF9800)
+                        containerColor = BtnGreen
                     ),
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 4.dp,
