@@ -1,6 +1,7 @@
 package com.example.mytrackerapp
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.filled.Lock// For the checkmark icon
 import androidx.compose.material.icons.filled.Email  // For the logout icon
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -44,6 +46,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.mytrackerapp.ui.theme.BtnGreen
+import com.example.mytrackerapp.ui.theme.poppinsFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,18 +74,20 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.login),
+                painter = painterResource(id = R.drawable.img2),
                 contentDescription = "Login Image",
                 modifier = Modifier
-                    .size(250.dp)
+                    .size(360.dp)
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
                 text = "FIT TRAC APP!",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
+                fontSize = 36.sp,
+                fontFamily = poppinsFamily,
+                fontWeight = FontWeight.Bold,
+                color = BtnGreen
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -103,7 +109,7 @@ fun LoginScreen(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                shape = RoundedCornerShape(15.dp),
+                shape = RoundedCornerShape(6.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
             )
 
@@ -128,7 +134,7 @@ fun LoginScreen(
                 visualTransformation = if (passwordVisible) VisualTransformation.None
                 else PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(15.dp),
+                shape = RoundedCornerShape(6.dp),
                 singleLine = true
             )
 
@@ -170,7 +176,10 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                enabled = !isLoading
+                enabled = !isLoading,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = BtnGreen,      // Background color
+                )
             ) {
                 if (isLoading) {
                     CircularProgressIndicator(

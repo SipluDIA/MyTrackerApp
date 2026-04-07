@@ -22,5 +22,5 @@ val RedDanger = Color(0xFFFF0000)
 
 val Grey1 = Color(0xFFBBBAC4)
 val Grey2 = Color(0xFFF7F8F8)
-val Grey3 = Color(0xFFADA4A5)
+val BtnYellow = Color(0xFFFABC06)
 val BtnGreen = Color(0xFFB0C929)

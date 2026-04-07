@@ -468,3 +468,5 @@ fun calculateCalories(activityType: String, duration: Int, distance: Double): Do
     val durationHours = duration / 3600.0
     return met * weightKg * durationHours
 }
+
+

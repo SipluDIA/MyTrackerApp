@@ -19,12 +19,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 val navController = rememberNavController()
-                val startDestination = if (sessionManager.isLoggedIn()) "dashboard" else "login"
+                val startDestination = if (sessionManager.isLoggedIn()) "dashboard" else "splash"
 
                 NavHost(
                     navController = navController,
                     startDestination = startDestination
                 ) {
+                    composable("splash") {
+                        SplashScreen(
+                            navController = navController
+                        )
+                    }
                     composable("register") {
                         RegisterScreen(
                             navController = navController,

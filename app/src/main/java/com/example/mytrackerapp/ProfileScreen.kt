@@ -1,9 +1,11 @@
 package com.example.mytrackerapp
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -12,12 +14,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.mytrackerapp.ui.theme.BtnGreen
+import com.example.mytrackerapp.ui.theme.BtnYellow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,13 +75,13 @@ fun ProfileScreen(
                         Icon(
                             Icons.Default.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color.White
+                            tint = Color.Black
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White
+                    containerColor = Color.Transparent,
+                    titleContentColor = Color.Black
                 )
             )
         }
@@ -101,7 +108,7 @@ fun ProfileScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                        containerColor = BtnGreen
                     )
                 ) {
                     Column(
@@ -114,16 +121,18 @@ fun ProfileScreen(
                             modifier = Modifier
                                 .size(80.dp)
                                 .background(
-                                    MaterialTheme.colorScheme.primary,
+                                    BtnYellow,
                                     shape = MaterialTheme.shapes.large
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
-                                Icons.Default.Person,
-                                contentDescription = null,
-                                modifier = Modifier.size(48.dp),
-                                tint = Color.White
+                            Image(
+                                painter = painterResource(id = R.drawable.profile),
+                                contentDescription = "Profile Image",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .clip(CircleShape)
                             )
                         }
                         Spacer(modifier = Modifier.height(12.dp))
@@ -135,7 +144,7 @@ fun ProfileScreen(
                         Text(
                             text = "Update your profile information",
                             fontSize = 14.sp,
-                            color = Color.Gray
+                            color = Color.Black
                         )
                     }
                 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -62,6 +63,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -76,6 +78,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.mytrackerapp.ui.theme.Black
 import com.example.mytrackerapp.ui.theme.BtnGreen
+import com.example.mytrackerapp.ui.theme.BtnYellow
 import com.example.mytrackerapp.ui.theme.GradientEnd
 import com.example.mytrackerapp.ui.theme.GradientStart
 import com.example.mytrackerapp.ui.theme.Grey1
@@ -133,19 +136,22 @@ fun DashboardScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("FIT TRAC APP") },
+                title = { Text(text="FIT TRAC APP", fontSize = 20.sp, fontWeight = FontWeight.Bold )},
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White
+                    containerColor = Color.Transparent,
+                    titleContentColor = Color.Black
                 ),
                 actions = {
                     IconButton(
                         onClick = { navController.navigate("profile") }
                     ) {
-                        Icon(
-                            Icons.Default.Person,
-                            contentDescription = "Profile",
-                            tint = Color.White
+                        Image(
+                            painter = painterResource(id = R.drawable.profile),
+                            contentDescription = "Profile Image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(CircleShape)
                         )
                     }
                     IconButton(
@@ -159,7 +165,7 @@ fun DashboardScreen(
                         Icon(
                             Icons.Default.ExitToApp,
                             contentDescription = "Logout",
-                            tint = Color.White
+                            tint = BtnYellow
                         )
                     }
                 }
@@ -183,7 +189,7 @@ fun DashboardScreen(
                                 Icons.Default.HouseSiding,
                                 contentDescription = null,
                                 modifier = Modifier.size(32.dp),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = BtnYellow
                             )
                         }
                         Text("Home", fontSize = 12.sp)
@@ -194,7 +200,7 @@ fun DashboardScreen(
                                 Icons.Default.List,
                                 contentDescription = null,
                                 modifier = Modifier.size(32.dp),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = BtnGreen
                             )
                         }
                         Text("Set Goals", fontSize = 12.sp)
@@ -205,7 +211,7 @@ fun DashboardScreen(
                                 Icons.Default.DirectionsRun,
                                 contentDescription = null,
                                 modifier = Modifier.size(28.dp),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = BtnGreen
                             )
                         }
                         Text("Activities", fontSize = 12.sp)
@@ -216,7 +222,7 @@ fun DashboardScreen(
                                 Icons.Default.History,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = BtnGreen
                             )
                         }
                         Text("Progress", fontSize = 12.sp)
@@ -258,12 +264,13 @@ fun DashboardScreen(
                 }
                 Box() {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_icon_notification),
-                        contentDescription = null,
+                        painter = painterResource(id = R.drawable.profile),
+                        contentDescription = "Profile Image",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .background(color = Grey2, shape = RoundedCornerShape(8.dp))
-                            .padding(10.dp)
-                            .clickable { println("Button Clicked!") })
+                            .size(48.dp)
+                            .clip(CircleShape)
+                    )
                 }
 
             }
@@ -286,21 +293,21 @@ fun DashboardScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(160.dp)
+                            .fillMaxSize()
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.bg_home_header),
+                            painter = painterResource(id = R.drawable.img1),
                             contentDescription = null,
-                            contentScale = ContentScale.FillBounds,
-                            modifier = Modifier.matchParentSize(),
-                            alignment = Alignment.Center
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(),
+                            contentScale = ContentScale.FillWidth
 
                         )
                         Column(
                             modifier = Modifier
-                                .height(150.dp)
-                                .padding(start = 18.dp, top = 22.dp, bottom = 12.dp),
+                                .height(200.dp)
+                                .padding(start = 18.dp, top = 50.dp, bottom = 12.dp),
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
@@ -348,8 +355,8 @@ fun DashboardScreen(
                                     .wrapContentSize()
                                     .padding(start = 0.dp, end = 0.dp, bottom = 0.dp)
                                     .background(
-                                        color = Color.White,
-                                        shape = RoundedCornerShape(15.dp)
+                                        color = BtnYellow,
+                                        shape = RoundedCornerShape(5.dp)
                                     )
                                     .height(30.dp),
                                 onClick = { navController.navigate("profile")},
@@ -357,7 +364,7 @@ fun DashboardScreen(
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
                                 Text(
-                                    "View Profile", color = Pink1, fontSize = 10.sp,
+                                    "View Profile", color = Color.White, fontSize = 14.sp,
                                     fontFamily = poppinsFamily, fontWeight = FontWeight.SemiBold
                                 )
                             }
@@ -377,30 +384,24 @@ fun DashboardScreen(
             ) {
 
                 Text(
-                    "Your Goal", color = Black, fontSize = 14.sp,
-                    fontFamily = poppinsFamily, fontWeight = FontWeight.Medium
+                    "Select Your Goal", color = Black, fontSize = 14.sp,
+                    fontFamily = poppinsFamily, fontWeight = FontWeight.SemiBold
                 )
                 Button(
                     modifier = Modifier
-                        .wrapContentSize()
                         .padding(start = 0.dp, end = 0.dp, bottom = 0.dp)
                         .background(
-                            brush = Brush.horizontalGradient(
-                                listOf(
-                                    GradientStart,
-                                    GradientEnd
-                                )
-                            ),
-                            shape = RoundedCornerShape(15.dp)
+                            color = BtnGreen,
+                            shape = RoundedCornerShape(5.dp)
                         )
                         .height(30.dp),
                     onClick = { navController.navigate("set_goal") },
-                    contentPadding = PaddingValues(start = 12.dp, end = 12.dp),
+                    contentPadding = PaddingValues(start = 30.dp, end = 30.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                 ) {
                     Text(
-                        "Check", color = Color.White, fontSize = 12.sp,
-                        fontFamily = poppinsFamily, fontWeight = FontWeight.Normal
+                        "Check", color = Color.White, fontSize = 14.sp,
+                        fontFamily = poppinsFamily, fontWeight = FontWeight.SemiBold
                     )
                 }
             }
@@ -418,7 +419,7 @@ fun DashboardScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "This Month's Progress",
+                        text = "Monthly Progress",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -427,7 +428,7 @@ fun DashboardScreen(
                     Text(
                         text = if (progressData?.hasGoals == true) "Active Goals" else "No Goals Set",
                         fontSize = 14.sp,
-                        color = if (progressData?.hasGoals == true) Color(0xFF4CAF50) else Color.Gray,
+                        color = if (progressData?.hasGoals == true) Color(0xFFB0C929) else Color.Gray,
                         fontWeight = FontWeight.Medium
                     )
                 }

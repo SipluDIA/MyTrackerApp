@@ -57,6 +57,7 @@ dependencies {
     // NEW: OpenStreetMap (osmdroid)
     implementation("org.osmdroid:osmdroid-android:6.1.20")
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.foundation.layout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
